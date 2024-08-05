@@ -1,0 +1,18 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++ build active file",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-std=c++23",
+                "${fileDirname}",
+                "-g",
+                "${fileDirname}/*.cpp",
+                "-o",
+                "${workspaceFolder}/out/${fileBasenameNoExtension}.o"
+            ],
+        }
+    ],
+    "version": "2.0.0"
+}

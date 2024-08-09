@@ -5,6 +5,7 @@
 #include <map>
 #include <unordered_map>
 #include <list>
+#include <format>
 
 
 using Price = int;
@@ -80,7 +81,7 @@ class Order
     {
         // filled for some invalid quantity
         if (quantity > GetRemainingQuantity()) {
-            throw std::logic_error("Order ({}) cannot be filled for more than remaining quantity");
+            throw std::logic_error(std::format("Order ({}) cannot be filled for more than remaining quantity", orderId_));
         }
         remainingQuantity_ -= quantity;
     }
@@ -294,7 +295,6 @@ class OrderBook
                 return;
             }
 
-
             const auto& [order, orderIterator] = orders_.at(orderId);
             orders_.erase(orderId);
 
@@ -320,11 +320,7 @@ class OrderBook
 };
 
 
-
 int main(){
     // lil testing
-    OrderBook orderbook;
-    const OrderId orderId = 1;
-    orderbook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel, orderId, Side::Buy, 100, 10));
-    return 0;
+    std::cout<<"hello world\n";
 }

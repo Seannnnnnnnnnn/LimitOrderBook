@@ -7,17 +7,26 @@
 #include "Side.h"
 
 
+// Used for market orders in which we orders effectively have an "invalid price" as we 
+// only want to fill up to the required quantity
+static const Price InvalidPrice = std::numeric_limits<Price>::quiet_NaN();
+
+
 class Order
 {
-    public:
-        Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity)
-            : orderType_{ orderType }
-            , orderId_{ orderId }
-            , side_{ side }
-            , price_{ price }
-            , initialQuantity_{ quantity }
-            , remainingQuantity_{ quantity }
-        { }
+public:
+    Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity)
+        : orderType_{ orderType }
+        , orderId_{ orderId }
+        , side_{ side }
+        , price_{ price }
+        , initialQuantity_{ quantity }
+        , remainingQuantity_{ quantity }
+    { }
+
+    Order(OrderId orderId, Side side, Quantity quantity)
+        : Order(OrderType::Market, orderId, side, InvalidPrice, quantity)
+    { }
     
     OrderType GetOrderType() const { return orderType_; }
     OrderId GetOrderId() const { return orderId_; }
@@ -30,11 +39,20 @@ class Order
 
     void Fill(Quantity quantity)
     {
-        // filled for some invalid quantity
         if (quantity > GetRemainingQuantity()) 
             throw std::logic_error(std::format("Order ({}) cannot be filled for more than remaining quantity", GetOrderId()));
         
         remainingQuantity_ -= quantity;
+    }
+
+    // Transforms a OrderType::Market order into a Good Till Cancel via the OrderBook::AddOrder() method
+    void ToGoodTillCancel(Price price)
+    {
+        if (GetOrderType() != OrderType::Market) 
+            throw std::logic_error(std::format("Order ({}) cannot be transformed to Good Till Cancel. Only Orders of Type 'Market' can.", GetOrderId())); 
+        
+        price_ = price;
+        orderType_ = OrderType::GoodTillCancel;
     }
 
     private:

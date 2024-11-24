@@ -112,6 +112,32 @@ Trades OrderBook::AddOrder(OrderPointer order)
         return { };
     }
 
+    if (order->GetOrderType() == OrderType::Market)
+    {
+        // To handle market orders we first check that there is volume on opposite side of the book
+        // Provided there is volume, transform the order to a Good Till Cancel on the worst price they 
+        // can be filled at.
+        if (order->GetSide() == Side::Sell && !asks_.empty()) 
+        {
+            const auto& [worstAsk, _] = *asks_.rbegin();
+            order->ToGoodTillCancel(worstAsk);
+        }
+
+        else if (order->GetSide() == Side::Buy && !bids_.empty())
+        {
+            const auto& [worstBid, _]  = *bids_.rbegin();
+            order->ToGoodTillCancel(worstBid);
+        }
+
+        // no volume on other side, so return empty set of trades.
+        else 
+        {
+            return { };
+        }
+
+
+    }
+
     OrderPointers::iterator iterator;
 
     if (order->GetSide() == Side::Buy) {

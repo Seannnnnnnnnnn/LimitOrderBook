@@ -2,6 +2,7 @@
 
 #include <map>
 #include <unordered_map>
+#include <thread>
 #include "Usings.h"
 #include "Order.h"
 #include "Trade.h"
@@ -19,9 +20,9 @@ private:
             OrderPointers::iterator location_;
         };
 
-        std::map<Price, OrderPointers, std::greater<Price>> bids_;
-        std::map<Price, OrderPointers, std::less<Price>> asks_;
-        std::unordered_map<OrderId, OrderEntry> orders_;
+    std::map<Price, OrderPointers, std::greater<Price>> bids_;
+    std::map<Price, OrderPointers, std::less<Price>> asks_;
+    std::unordered_map<OrderId, OrderEntry> orders_;
 
     bool CanMatch(Side side, Price price) const;
     Trades MatchOrders();

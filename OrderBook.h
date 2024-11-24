@@ -3,13 +3,12 @@
 #include <map>
 #include <unordered_map>
 #include <thread>
+
 #include "Usings.h"
 #include "Order.h"
 #include "Trade.h"
 #include "OrderModify.h"
 #include "OrderBookLevelInfos.h"
-
-
 
 class OrderBook
 {

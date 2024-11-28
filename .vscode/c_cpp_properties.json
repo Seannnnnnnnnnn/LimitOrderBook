@@ -1,6 +1,29 @@
 {
     "configurations": [
         {
+            "name": "Mac",
+            "includePath": [
+                "/Users/sean/LimitOrderBook/**"
+            ],
+            "defines": [],
+            "macFrameworkPath": [
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "macos-clang-x86",
+            "mergeConfigurations": false,
+            "browse": {
+                "path": [
+                    "/Users/sean/LimitOrderBook/**",
+                    "/Users/sean/LimitOrderBook"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "compilerPathInCppPropertiesJson": "/usr/bin/gcc"
+        },
+        {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**"

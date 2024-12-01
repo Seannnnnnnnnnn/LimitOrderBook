@@ -1,6 +1,72 @@
 #include <iostream>
 #include <numeric>
+#include <chrono>
 #include "OrderBook.h"
+
+
+void OrderBook::pruneGoodForDayOrders()
+{
+    const auto end = std::chrono::hours(16);  // prune GoodForDay orders at 4pm
+
+    // TODO: add in checks around time for order pruning
+    
+    while (true)
+    {
+        OrderIds orderIds;
+        {
+            std::scoped_lock( ordersMutex );
+
+            for (const auto& [_, entry] : orders_) 
+            {
+                const auto& [order, _] = entry;
+
+                if (order->GetOrderType() == OrderType::GoodForDay)
+                    orderIds.push_back(order->GetOrderId());
+            }
+        }
+        CancelOrders(orderIds);        
+    }
+}
+
+
+void OrderBook::CancelOrders(OrderIds orderIds)
+{
+    // Implement a private method for cancelling orders to avoid excessive memory buss traffic
+    // when pruning good for day orders. 
+    std::scoped_lock { ordersMutex }; 
+    
+    for (const auto& orderId : orderIds)
+    {
+        CancelOrderInternal(orderId);
+    }
+}
+
+
+void OrderBook::CancelOrderInternal(OrderId orderId)
+{
+    if (!orders_.contains(orderId)) 
+        return;
+    
+    const auto& [order, iterator] = orders_.at(orderId);
+    orders_.erase(orderId);
+
+    if (order->GetSide() == Side::Sell)
+    {
+        auto price = order->GetPrice();
+        auto& orders = asks_.at(price);
+        orders.erase(iterator);
+        if (orders.empty())
+            asks_.erase(price);
+    }
+    else
+    {
+        auto price = order->GetPrice();
+        auto& orders = bids_.at(price);
+        orders.erase(iterator);
+        if (orders.empty())
+            bids_.erase(price);
+    }
+}
 
 
 bool OrderBook::CanMatch(Side side, Price price) const 
@@ -134,8 +200,6 @@ Trades OrderBook::AddOrder(OrderPointer order)
         {
             return { };
         }
-
-
     }
 
     OrderPointers::iterator iterator;

@@ -23,8 +23,15 @@ private:
     std::map<Price, OrderPointers, std::less<Price>> asks_;
     std::unordered_map<OrderId, OrderEntry> orders_;
 
+    std::mutex ordersMutex;
+    std::thread ordersPruneThread;
+
     bool CanMatch(Side side, Price price) const;
     Trades MatchOrders();
+
+    void pruneGoodForDayOrders();
+    void CancelOrders(OrderIds orderIds); 
+    void CancelOrderInternal(OrderId orderId);
 
 public:
     Trades AddOrder(OrderPointer order);

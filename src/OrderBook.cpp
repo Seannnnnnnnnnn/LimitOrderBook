@@ -216,6 +216,7 @@ Trades OrderBook::AddOrder(OrderPointer order)
     }
 
     orders_.insert({ order->GetOrderId(), OrderEntry{ order, iterator }});
+    OnOrderAdded(order);
     return MatchOrders();
 }
 
@@ -247,6 +248,8 @@ void OrderBook::CancelOrder(OrderId orderId)
             asks_.erase(price); 
         }
     }
+
+    OnOrderCancelled(order);
 }
 
 
@@ -288,4 +291,25 @@ OrderBookLevelInfos OrderBook::GetOrderInfos() const
 std::size_t OrderBook::Size() const
 { 
     return orders_.size(); 
+}
+
+
+void OrderBook::OnOrderCancelled(OrderPointer order)
+{
+    LevelData levelData = priceLevelMetaData_.at(order->GetPrice());
+    levelData.quantity_ -= order->GetRemainingQuantity();
+    
+    if (levelData.quantity_ < 0)
+        throw std::logic_error(std::format("Level Meta Data at price {} has negative volume", levelData.price_));
+
+    if (levelData.quantity_ == 0)
+        priceLevelMetaData_.erase(levelData.price_);
+}
+
+
+bool OrderBook::CanFullyFill(Price price, Quantity quantity, Side side) const
+{
+    if (!CanMatch(side, price))
+        return false;
+    
 }

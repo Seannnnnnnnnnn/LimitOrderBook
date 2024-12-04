@@ -4,6 +4,24 @@
 
 \author{Sean Conlon | \texttt{sc.sean.conlon \@ gmail.com}}
 
+A \textit{Limit Order Book}, or simply, an \textit{Order Book} is a data structure used by
+financial exchanges for organising orders for securities. In an actual exchange, a separate order
+book is maintained for each security traded. 
+
+Orders have the following fields: 
+\begin{itemize}
+    \item \texttt{Price} : The price at which the order is placed
+    \item \texttt{Quantity} : The volume for which the order is placed
+    \item \texttt{Side} : The \tex
+\end{itemize}
+
+The data structure must support the following operations:
+
+\begin{enumerate}
+    \item \texttt{Insert(Order)} : Given a new order, insert it into the Book
+    \item \texttt{Cancel(Order)} : Given an exisitng order, remove it from the Book
+    \item \texttt{Modify(Order, NewOrder)} : Given an existing order, replace it with a new, modified order.
+\end{enumerate}
 
 
 

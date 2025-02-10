@@ -2,10 +2,10 @@
 
 #include "Usings.h"
 
-struct LevelInfo
+struct TradeInfo
 {
+    OrderId orderId_;
     Price price_;
     Quantity quantity_;
 };
 
-using LevelInfos = std::vector<LevelInfo>;

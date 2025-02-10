@@ -2,9 +2,9 @@
 
 enum class OrderType
 {
-    GoodTillCancel,
-    FillAndKill,
-    FillOrKill,
-    GoodForDay,
-    Market,
+	GoodTillCancel,
+	FillAndKill,
+	FillOrKill,
+	GoodForDay,
+	Market,
 };

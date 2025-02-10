@@ -1,9 +1,8 @@
-#include <memory>
-#include <list>
+#pragma once
+
 #include <vector>
 
-using Price = int;
-using Quantity = uint32_t;
-using OrderId = uint32_t;
+using Price = std::int32_t;
+using Quantity = std::uint32_t;
+using OrderId = std::uint64_t;
 using OrderIds = std::vector<OrderId>;
-
